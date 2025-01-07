@@ -1,35 +1,56 @@
-import React from "react";
 import { data } from '../utils/fetchData';
+import StatCard from '../ui/Card';
 
 const OverviewCard = () => {
-  const financialData = data[0]; // Assuming we want the first entry from fetchData for now
+  const financialData = data[0];
+
+  const stats = [
+    {
+      title: 'Total Sales',
+      value: financialData.total_sales,
+      color: 'text-green-500',
+      percentageChange: '+5%',
+    },
+    {
+      title: 'Total Expenses',
+      value: financialData.total_expenses,
+      color: 'text-red-500',
+      percentageChange: '-2% ',
+    },
+    {
+      title: 'Net Profit',
+      value: financialData.net_profit,
+      color: 'text-green-500',
+      percentageChange: '+3% ',
+    },
+    {
+      title: 'Due Amount',
+      value: financialData.due_amount,
+      color: 'text-red-500',
+      percentageChange: '-1% ',
+    },
+    {
+      title: 'Payment Received',
+      value: financialData.payment_received,
+      color: 'text-green-500',
+      percentageChange: '+4% ',
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-semibold">Total Sales</h3>
-        <p className="text-2xl text-green-500">${financialData.total_sales}</p>
-        <p className="text-sm text-gray-500">+5% from last month</p>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-semibold">Total Expenses</h3>
-        <p className="text-2xl text-red-500">${financialData.total_expenses}</p>
-        <p className="text-sm text-gray-500">-2% from last month</p>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-semibold">Net Profit</h3>
-        <p className="text-2xl text-green-500">${financialData.net_profit}</p>
-        <p className="text-sm text-gray-500">+3% from last month</p>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-semibold">Due Amount</h3>
-        <p className="text-2xl text-red-500">${financialData.due_amount}</p>
-        <p className="text-sm text-gray-500">-1% from last month</p>
-      </div>
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-semibold">Payment Received</h3>
-        <p className="text-2xl text-green-500">${financialData.payment_received}</p>
-        <p className="text-sm text-gray-500">+4% from last month</p>
+    <div>
+      <h1 className="font-[500] text-[#1C1C1C] text-[30px] p-2 w-[1146px]">Overview</h1>
+      <div className="flex  sm:grid-cols-2 lg:grid-cols-3 gap-[100px] mb-6">
+        {stats.map((stat, index) => (
+          <StatCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            color={stat.color}
+            percentageChange={stat.percentageChange}
+            bgColor={index % 2 === 0 ? 'bg-[#D9F2FB]' : 'bg-[#E2E5EA]'} // Alternate background
+          />
+        ))}
       </div>
     </div>
   );

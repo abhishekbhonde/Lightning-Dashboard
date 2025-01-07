@@ -6,16 +6,20 @@ const Navbar: React.FC = () => {
     <div className="flex items-center justify-center text-white p-4 flex items-center justify-between">
       {/* Logo Section */}
      
-        <div className="w-[443px] flex items-center justify-center text-center h-[50px] font-[600] rounded-b-[20px] text-[20px] font-inter bg-[#00AEEF]">
+        <div className="w-[443px] ml-[530px] flex items-center justify-center text-center h-[50px] font-[600] rounded-b-[20px] text-[20px] font-inter bg-[#00AEEF]">
         Springfield media
         </div>
       {/* Profile Section */}   
-      <div className="flex items-center">
+      <div className="flex items-center gap-3 mt-[31px]">
         <div className="w-[48px] h-[48px] rounded-[14px] flex items-center justify-center bg-[#FFFFFF]">
             <FaSearch className="w-[24px] h-[24px] text-[#0A1629]"/>
         </div>
-        <FaUserCircle className="text-2xl" />
-        <span><img src="" alt="" /></span>
+       
+       <div className="w-[182px] h-[48px] bg-[#FFFFFF] flex gap-3 items-center justify-center rounded-[14px]">
+       <span><img src="../../public/photo.png" alt="" /></span>
+       <span className="font-[700] text-[#0A1629] text-[16px]">Evan Yates</span>
+       
+       </div>
       </div>
     </div>
   );
