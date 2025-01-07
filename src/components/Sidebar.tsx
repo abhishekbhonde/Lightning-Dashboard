@@ -26,7 +26,7 @@ const App: React.FC = () => {
       {/* Sidebar Component */}
       <Sidebar
         items={sidebarItems}
-        footerImage="../../public/illustration.png"
+        footerImage="/illustration.png"
         footerButtonLabel="Support"
         isOpen={sidebarOpen}
         toggleSidebar={() => setSidebarOpen(!sidebarOpen)} // Toggle function passed as prop

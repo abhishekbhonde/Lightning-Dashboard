@@ -10,7 +10,7 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, percentageChange, bgColor }) => {
   const isPositive = percentageChange.includes('+'); // Check if the change is positive
-  const icon = isPositive ? '../../public/ArrowRise.png' : '../../public/Vector.png'; // Adjust paths based on your project
+  const icon = isPositive ? '/ArrowRise.png' : '/Vector.png'; // Adjust paths based on your project
 
   return (
     <div className={`p-6 rounded-lg shadow-lg ${bgColor} w-full sm:w-[202px] h-[112px] rounded-[16px] flex flex-col justify-between`}>

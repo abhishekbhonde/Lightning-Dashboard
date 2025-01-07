@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="w-[182px] h-[48px] bg-[#FFFFFF] flex gap-3 items-center justify-center rounded-[14px]">
-          <span><img src="../../public/photo.png" alt="Profile" className="w-10 h-10 rounded-full" /></span>
+          <span><img src="/photo.png" alt="Profile" className="w-10 h-10 rounded-full" /></span>
           <span className="font-[700] text-[#0A1629] text-[16px]">Evan Yates</span>
         </div>
       </div>

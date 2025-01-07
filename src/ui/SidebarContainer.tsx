@@ -23,7 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({ items, footerImage, footerButtonLabel
     >
       {/* Logo */}
       <div className="top-6 left-6 mt-[50px] md:top-6 md:left-6">
-        <img className="w-[174px] h-[54px]" src="../../public/logo.png" alt="Logo" />
+        <img className="w-[174px] h-[54px]" src="/logo.png" alt="Logo" />
       </div>
 
       {/* Menu Items */}
