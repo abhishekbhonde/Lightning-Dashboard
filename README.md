@@ -1,4 +1,3 @@
-Sure! Here's a more concise version of your README:
 
 ---
 
@@ -12,7 +11,7 @@ Sure! Here's a more concise version of your README:
 
 ## Live Hosted Application
 You can access the hosted version of the application here:  
-[Live Application]([https://your-hosted-link.com](https://lightning-dashboard-hazel.vercel.app/))
+[Live Application](https://lightning-dashboard-hazel.vercel.app/)
 
 ## How to Set Up Locally
 
@@ -44,4 +43,4 @@ You can access the hosted version of the application here:
 
 ---
 
-Make sure to replace the placeholders with the actual live link and your GitHub username.
+Make sure to update the GitHub repository link as well if necessary. The hosted application link should now correctly appear in the markdown.
