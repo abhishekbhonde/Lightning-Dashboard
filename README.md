@@ -18,13 +18,13 @@ You can access the hosted version of the application here:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-github-username/dashboard-ui.git
+   git clone https://github.com/abhishekbhonde/Lightning-Dashboard
    ```
 
 2. Navigate into the project directory:
 
    ```bash
-   cd dashboard-ui
+   cd Lightning-Dashboard
    ```
 
 3. Install the dependencies:
