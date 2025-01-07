@@ -1,9 +1,8 @@
-import React from 'react';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 import OverviewCard from './components/OverviewCard';
-import Charts from './components/Charts';
 import Dashboard from './components/Dashboard';
+import Payments from './components/Payments';
 
 const App = () => {
   return (
@@ -27,6 +26,9 @@ const App = () => {
           {/* Graph Section */}
           <div >
             <div><Dashboard/></div>
+          </div>
+          <div>
+            <Payments/>
           </div>
         </div>
       </div>

@@ -1,5 +1,4 @@
 // src/components/Charts.tsx
-import React from "react";
 import { Pie, Line } from "react-chartjs-2";
 import { ArcElement, PointElement, LineElement, Title, Tooltip, Legend, CategoryScale, LinearScale } from 'chart.js';
 import { Chart as ChartJS } from 'chart.js';

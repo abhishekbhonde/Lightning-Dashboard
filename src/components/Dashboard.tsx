@@ -25,38 +25,53 @@ ChartJS.register(
   LinearScale
 );
 
+interface TopSellingProduct {
+  item: string;
+  weight: number;
+}
+
+interface DataRecord {
+  month: string;
+  bags: number;
+}
+
+interface DashboardData {
+  supplier_records: DataRecord[];
+  customer_records: DataRecord[];
+  top_selling_products: TopSellingProduct[];
+}
+
 const Dashboard: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>('January');
 
   // Extract unique months from the data
-  const months = useMemo(
-    () =>
-      Array.from(
-        new Set(
-          data.flatMap((entry) => [
-            ...entry.supplier_records.map((record) => record.month),
-            ...entry.customer_records.map((record) => record.month),
-          ])
-        )
-      ),
-    []
-  );
+  const months = useMemo(() => {
+    return Array.from(
+      new Set(
+        data.flatMap((entry: DashboardData) => [
+          ...entry.supplier_records.map((record) => record.month),
+          ...entry.customer_records.map((record) => record.month),
+        ])
+      )
+    );
+  }, []);
 
   // Filter data for the selected month
-  const filteredData = useMemo(
-    () =>
-      data.find(
-        (entry) =>
-          entry.supplier_records.some((record) => record.month === selectedMonth) ||
-          entry.customer_records.some((record) => record.month === selectedMonth)
+  const filteredData = useMemo(() => {
+    return {
+      supplier_records: data.flatMap((entry) =>
+        entry.supplier_records.filter((record) => record.month === selectedMonth)
       ),
-    [selectedMonth]
-  );
-
-  // If no data is available for the selected month
-  if (!filteredData) {
-    return <p>No data available for the selected month.</p>;
-  }
+      customer_records: data.flatMap((entry) =>
+        entry.customer_records.filter((record) => record.month === selectedMonth)
+      ),
+      top_selling_products: data.flatMap((entry) =>
+        entry.top_selling_products.filter((product) =>
+          product.item && product.weight
+        )
+      ),
+    };
+  }, [selectedMonth]);
 
   // Prepare chart data dynamically based on the filtered data
   const supplierVsCustomerData = useMemo(
@@ -66,18 +81,12 @@ const Dashboard: React.FC = () => {
         {
           label: 'Supplier Bags',
           data: filteredData.supplier_records.map((record) => record.bags),
-          borderColor: (ctx) => {
-            const { chart } = ctx;
-            const gradient = chart.ctx.createLinearGradient(0, 0, chart.width, 0);
-            gradient.addColorStop(0, 'rgba(0, 0, 0, 0.4)');
-            gradient.addColorStop(1, '#000000');
-            return gradient;
-          },
+          borderColor: '#000000',
           borderWidth: 2,
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           fill: true,
           tension: 0.4,
-          pointRadius: 0, // Remove the points (markers) on the line
+          pointRadius: 0,
         },
         {
           label: 'Customer Bags',
@@ -87,88 +96,56 @@ const Dashboard: React.FC = () => {
           backgroundColor: 'rgba(153, 102, 255, 0.2)',
           fill: true,
           tension: 0.4,
-          pointRadius: 0, // Remove the points (markers) on the line
+          pointRadius: 0,
         },
       ],
     }),
     [filteredData]
   );
 
-  const topSellingData = useMemo(
-    () => {
-      // Create gradient for the largest part of the pie chart
-      const gradient = (ctx: any) => {
-        const { chart } = ctx;
-        const gradientFill = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
-        gradientFill.addColorStop(0, '#00395D');
-        gradientFill.addColorStop(0.5, 'rgba(6, 80, 128, 0.6)');
-        gradientFill.addColorStop(1, 'rgba(0, 57, 93, 0.6)');
-        return gradientFill;
-      };
+  const topSellingData = useMemo(() => {
+    // Sort and limit the top-selling products (e.g., top 5)
+    const topSellingProducts = filteredData.top_selling_products
+      .sort((a, b) => b.weight - a.weight)
+      .slice(0, 5); // Limit to top 5 items
 
-      const topSellingProducts = filteredData.top_selling_products;
-
-      // Sort products by weight in descending order
-      topSellingProducts.sort((a, b) => b.weight - a.weight);
-
-      // Assign unique colors to each slice
-      const backgroundColors = topSellingProducts.map((product, index) => {
-        if (index === 0) {
-          return gradient; // Apply gradient to the largest portion
-        } else if (index === 1) {
-          return '#90DCF9'; // Blue
-        } else if (index === 2) {
-          return '#D9F2FB'; // Light Blue
-        } else if (index === 3) {
-          return '#E2E5EA'; // Light Gray
-        } else if (index === 4) {
-          return '#237FAC'; // Dark Blue
-        } else {
-          return '#2E3A59'; // Darker Gray
-        }
-      });
-
-      return {
-        labels: topSellingProducts.map((product) => product.item),
-        datasets: [
-          {
-            data: topSellingProducts.map((product) => product.weight),
-            backgroundColor: backgroundColors,
-          },
-        ],
-      };
-    },
-    [filteredData]
-  );
+    return {
+      labels: topSellingProducts.map((product) => product.item),
+      datasets: [
+        {
+          data: topSellingProducts.map((product) => product.weight),
+          backgroundColor: ['#00395D', '#90DCF9', '#D9F2FB', '#E2E5EA', '#237FAC'],
+        },
+      ],
+    };
+  }, [filteredData]);
 
   const lineChartOptions = {
     responsive: true,
     scales: {
       x: {
         grid: {
-          display: false, // Disable grid lines on the x-axis
+          display: false,
         },
       },
       y: {
         ticks: {
-          callback: (value: number) => `${value / 1000}k`, // Formatting the ticks as 'k'
-          stepSize: 10000, // Step size between ticks (10k)
+          callback: (value: number) => `${value / 1000}k`,
+          stepSize: 10000,
         },
-        min: 0, // Minimum value (0k)
-        max: 30000, // Maximum value (30k, or as needed)
+        min: 0,
+        max: 30000,
         grid: {
-          display: true, // Display grid lines on the y-axis
+          display: true,
         },
-        beginAtZero: true, // Ensure the Y-axis starts at zero
+        beginAtZero: true,
       },
     },
   };
 
   return (
-    <div className="flex rounded-[16px] gap-[70px] bg-[#F7F9FB] p-6 ">
-      {/* Line Chart Section */}
-      <div className="w-[1200px]  p-6 bg-white rounded-[16px] shadow-lg"> {/* Added shadow-lg here */}
-        {/* Dropdown Section */}
+    <div className="flex flex-col md:flex-row rounded-[16px] gap-6 md:gap-12 bg-[#F7F9FB] p-6">
+      <div className="w-[340px] md:w-[70%] h-auto p-6 bg-white rounded-[16px] shadow-lg">
         <div className="mb-6 flex items-center gap-4">
           <span className="text-lg font-medium text-black">Bags:</span>
           <div className="relative">
@@ -189,11 +166,11 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="p-6  rounded-lg text-white mb-6 w-[900px] h-[400px]">
+        <div className="p-6 rounded-lg mb-6 w-full w-[340px] md:w-[750px] h-[300px] md:h-[320px] lg:h-[420px]">
+          {/* @ts-ignore */}
           <Line data={supplierVsCustomerData} options={lineChartOptions} />
         </div>
-        {/* Labels below the chart */}
-        <div className="flex justify-center space-x-10 text-black text-lg">
+        <div className="flex justify-center space-x-8 text-black text-lg -mt-10">
           <div className="flex items-center">
             <div
               style={{
@@ -204,7 +181,7 @@ const Dashboard: React.FC = () => {
                 marginRight: '8px',
               }}
             ></div>
-            <span className='text-[16px] font-[400] text-black'>Supplier Graph</span>
+            <span className="text-[16px] font-[400] text-black">Supplier Graph</span>
           </div>
           <div className="flex items-center">
             <div
@@ -216,24 +193,38 @@ const Dashboard: React.FC = () => {
                 marginRight: '8px',
               }}
             ></div>
-            <span className='text-[16px] font-400 text-black'>Customer Graph</span>
+            <span className="text-[16px] font-400 text-black">Customer Graph</span>
           </div>
         </div>
       </div>
-
-      {/* Pie Chart Section */}
-      <div className="w-[500px] h-[700px] p-6 bg-white rounded-[16px]"> {/* Increased height and width here */}
-        <h3 className="text-xl font-semibold mb-4 text-black">Top Selling Products</h3>
-        <Pie data={topSellingData} options={{ responsive: true }} />
-
-        {/* List of top selling items */}
+      <div className="w-full md:w-[30%] h-auto p-6 bg-white rounded-[16px] mt-6 md:mt-0">
+        <h3 className="text-[14px] text-center font-semibold mb-4 text-black">
+          Top Selling Products
+        </h3>
+        <div className="w-[100%] max-w-[286px] mx-auto">
+          <Pie data={topSellingData} options={{ responsive: true }} />
+        </div>
         <div className="mt-6">
-          <h4 className="text-lg font-medium text-black mb-3">Top Selling Items:</h4>
-          <ul className="space-y-2">
-            {filteredData.top_selling_products.map((product, index) => (
-              <li key={index} className="flex justify-between text-black">
-                <span>{product.item}</span>
-                <span>{product.weight} kg</span>
+          <ul className="space-y-2 text-[#1C1C1C] text-[12px] flex items-center justify-center flex-col font-400">
+            {topSellingData.labels.map((product, index) => (
+              <li
+                key={index}
+                className="flex items-center justify-center gap-[50px] md:gap-[150px] text-black"
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    style={{
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: topSellingData.datasets[0].backgroundColor[
+                        index
+                      ],
+                      borderRadius: '50%',
+                    }}
+                  ></div>
+                  <span>{product}</span>
+                </div>
+                <span>{filteredData.top_selling_products[index].weight} kg</span>
               </li>
             ))}
           </ul>
